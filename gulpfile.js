@@ -12,6 +12,7 @@ var fs        = require('fs'),
     htmlmin   = require('gulp-html-minifier'),
     replace   = require('gulp-replace'),
     wrap      = require('gulp-wrap'),
+    nodemon   = require('gulp-nodemon'),
     meta      = require('./package.json'),
     config;
 
@@ -139,6 +140,7 @@ gulp.task('copy-stress-test', function() {
 });
 
 gulp.task('watch', ['dev'], function () {
+    gulp.watch('bin/*.js', ['server']);
     gulp.watch('src/shared/**/*.js', ['jshint', 'server', 'front-full']);
     gulp.watch('src/client/**/*.js', ['jshint', 'front-full']);
     gulp.watch('src/server/**/*.js', ['jshint', 'server']);
@@ -148,5 +150,12 @@ gulp.task('watch', ['dev'], function () {
     gulp.watch('src/sass/**/*.scss', ['sass-full']);
 });
 
+gulp.task('livereload', function () {
+    nodemon({
+        script: 'bin/curvytron.js',
+        ext: 'html js'
+    });
+})
+
 gulp.task('default', ['jshint', 'server', 'front-expose', 'ga', 'views', 'front-min', 'sass-min']);
-gulp.task('dev', ['jshint', 'server', 'front-expose', 'copy-stress-test', 'ga', 'views', 'front-full', 'sass-full']);
+gulp.task('dev', ['jshint', 'server', 'front-expose', 'copy-stress-test', 'ga', 'views', 'front-full', 'sass-full', 'livereload']);
