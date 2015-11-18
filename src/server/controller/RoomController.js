@@ -42,6 +42,7 @@ function RoomController(room)
         onActivity: function () { controller.onActivity(this); },
 
         onConfigOpen: function (data) { controller.onConfigOpen(this, data[0], data[1]); },
+        onConfigGameMode: function (data) { controller.onConfigGameMode(this, data[0], data[1]); },
         onConfigMaxScore: function (data) { controller.onConfigMaxScore(this, data[0], data[1]); },
         onConfigVariable: function (data) { controller.onConfigVariable(this, data[0], data[1]); },
         onConfigBonus: function (data) { controller.onConfigBonus(this, data[0], data[1]); },
@@ -225,6 +226,7 @@ RoomController.prototype.setRoomMaster = function(client)
         this.roomMaster.on('close', this.removeRoomMaster);
         this.roomMaster.on('room:leave', this.removeRoomMaster);
         this.roomMaster.on('room:config:open', this.callbacks.onConfigOpen);
+        this.roomMaster.on('room:config:game-mode', this.callbacks.onConfigGameMode);
         this.roomMaster.on('room:config:max-score', this.callbacks.onConfigMaxScore);
         this.roomMaster.on('room:config:variable', this.callbacks.onConfigVariable);
         this.roomMaster.on('room:config:bonus', this.callbacks.onConfigBonus);
@@ -242,6 +244,7 @@ RoomController.prototype.removeRoomMaster = function()
         this.roomMaster.removeListener('close', this.removeRoomMaster);
         this.roomMaster.removeListener('room:leave', this.removeRoomMaster);
         this.roomMaster.removeListener('room:config:open', this.callbacks.onConfigOpen);
+        this.roomMaster.removeListener('room:config:game-mode', this.callbacks.onConfigGameMode);
         this.roomMaster.removeListener('room:config:max-score', this.callbacks.onConfigMaxScore);
         this.roomMaster.removeListener('room:config:variable', this.callbacks.onConfigVariable);
         this.roomMaster.removeListener('room:config:bonus', this.callbacks.onConfigBonus);
@@ -592,6 +595,24 @@ RoomController.prototype.onConfigOpen = function(client, data, callback)
             open: this.room.config.open,
             password: this.room.config.password
         });
+    }
+};
+
+/**
+ * On config game mode
+ *
+ * @param {SocketClient} client
+ * @param {Object} data
+ * @param {Function} callback
+ */
+RoomController.prototype.onConfigGameMode = function(client, data, callback)
+{
+    var success = this.isRoomMaster(client) && this.room.config.setGameMode(data.gameMode);
+
+    callback({success: success, gameMode: this.room.config.gameMode });
+
+    if (success) {
+        this.socketGroup.addEvent('room:config:game-mode', { gameMode: this.room.config.gameMode });
     }
 };
 

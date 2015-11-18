@@ -24,6 +24,7 @@ function RoomRepository(client)
     this.onPlayerColor    = this.onPlayerColor.bind(this);
     this.onPlayerName     = this.onPlayerName.bind(this);
     this.onConfigOpen     = this.onConfigOpen.bind(this);
+    this.onConfigGameMode = this.onConfigGameMode.bind(this);
     this.onConfigMaxScore = this.onConfigMaxScore.bind(this);
     this.onConfigVariable = this.onConfigVariable.bind(this);
     this.onConfigBonus    = this.onConfigBonus.bind(this);
@@ -51,6 +52,7 @@ RoomRepository.prototype.attachEvents = function()
     this.client.on('player:color', this.onPlayerColor);
     this.client.on('player:name', this.onPlayerName);
     this.client.on('room:config:open', this.onConfigOpen);
+    this.client.on('room:config:game-mode', this.onConfigGameMode);
     this.client.on('room:config:max-score', this.onConfigMaxScore);
     this.client.on('room:config:variable', this.onConfigVariable);
     this.client.on('room:config:bonus', this.onConfigBonus);
@@ -77,6 +79,7 @@ RoomRepository.prototype.detachEvents = function()
     this.client.off('player:color', this.onPlayerColor);
     this.client.off('player:name', this.onPlayerName);
     this.client.off('room:config:open', this.onConfigOpen);
+    this.client.off('room:config:game-mode', this.onConfigGameMode);
     this.client.off('room:config:max-score', this.onConfigMaxScore);
     this.client.off('room:config:variable', this.onConfigVariable);
     this.client.off('room:config:bonus', this.onConfigBonus);
@@ -179,6 +182,7 @@ RoomRepository.prototype.createRoom = function(data, clients)
 
     room.config.setOpen(data.config.open);
     room.config.setPassword(data.config.password);
+    room.config.setGameMode(data.config.gameMode);
     room.config.setMaxScore(data.config.maxScore);
 
     for (var variable in data.config.variables) {
@@ -358,6 +362,17 @@ RoomRepository.prototype.setReady = function(player, callback)
 RoomRepository.prototype.setConfigOpen = function(open, callback)
 {
     this.client.addEvent('room:config:open', {open: open ? true : false}, callback);
+};
+
+/**
+ * Set config game mode
+ *
+ * @param {Number} gameMode
+ * @param {Function} callback
+ */
+RoomRepository.prototype.setConfigGameMode = function(gameMode, callback)
+{
+    this.client.addEvent('room:config:game-mode', {gameMode: gameMode}, callback);
 };
 
 /**
@@ -555,6 +570,19 @@ RoomRepository.prototype.onConfigOpen = function(e)
     this.room.config.setPassword(data.password);
 
     this.emit('room:config:open', {open: data.open, password: data.password});
+};
+
+/**
+ * On config game mode
+ *
+ * @param {Event} e
+ */
+RoomRepository.prototype.onConfigGameMode = function(e)
+{
+    var data = e.detail;
+
+    this.room.config.setGameMode(data.gameMode);
+    this.emit('config:game-mode', {gameMode: data.gameMode});
 };
 
 /**

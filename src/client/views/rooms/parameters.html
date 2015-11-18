@@ -16,6 +16,15 @@
                 <input type="text" class="form-control" id="password" ng-model="config.password" readonly maxlength="4" />
             </div>
         </div>
+        <div class="game-mode">
+            <h2>Game mode</h2>
+            <label class="toggler" ng-class="{ 'active': config.gameMode == 'team' }" id="is-team" ng-click="setGameMode('team')">Team</label>
+            <div class="toggle" ng-class="{ 'active': (config.gameMode == 'team') }">
+                <input type="checkbox" id="game-mode" ng-model="config.gameMode" ng-true-value="'team'" ng-false-value="'ffa'" ng-change="setGameMode(config.gameMode)" ng-disabled="!master" class="check">
+                <b class="b switch"></b>
+            </div>
+            <label class="toggler" ng-class="{ 'active': config.gameMode == 'ffa' }" id="is-ffa" ng-click="setGameMode('ffa')">FFA</label>
+        </div>
     </div>
     <div class="col-lg-8 bonus-list">
         <h2>Bonus</h2>

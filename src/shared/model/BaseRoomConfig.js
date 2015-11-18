@@ -6,6 +6,7 @@ function BaseRoomConfig(room)
     EventEmitter.call(this);
 
     this.room     = room;
+    this.gameMode = 'ffa';
     this.maxScore = null;
     this.open     = true;
     this.password = null;
@@ -39,6 +40,18 @@ BaseRoomConfig.prototype.constructor = BaseRoomConfig;
  * @type {Number}
  */
 BaseRoomConfig.prototype.passwordLength = 4;
+
+/**
+ * Set max score
+ *
+ * @param {String} gameMode
+ */
+BaseRoomConfig.prototype.setGameMode = function(gameMode)
+{
+    this.gameMode = gameMode;
+
+    return true;
+};
 
 /**
  * Set max score
@@ -157,6 +170,16 @@ BaseRoomConfig.prototype.setBonus = function(bonus, value)
 };
 
 /**
+ * Get game mode
+ *
+ * @return {String}
+ */
+BaseRoomConfig.prototype.getGameMode = function()
+{
+    return this.gameMode ? this.gameMode : 'ffa';
+};
+
+/**
  * Get max score
  *
  * @return {Number}
@@ -214,6 +237,7 @@ BaseRoomConfig.prototype.generatePassword = function()
 BaseRoomConfig.prototype.serialize = function()
 {
     return {
+        gameMode: this.gameMode,
         maxScore: this.maxScore,
         variables: this.variables,
         bonuses: this.bonuses,
