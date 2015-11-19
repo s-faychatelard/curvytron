@@ -6,7 +6,7 @@ function BaseRoomConfig(room)
     EventEmitter.call(this);
 
     this.room     = room;
-    this.gameMode = 'ffa';
+    this.gameMode = 'team';
     this.maxScore = null;
     this.open     = true;
     this.password = null;

@@ -50,6 +50,7 @@ function RoomController($scope, $routeParams, $location, client, repository, pro
     this.toggleParameters = this.toggleParameters.bind(this);
     this.onRoomMaster     = this.onRoomMaster.bind(this);
     this.onConfigOpen     = this.onConfigOpen.bind(this);
+    this.onConfigGameMode = this.onConfigGameMode.bind(this);
     this.onLaunchStart    = this.onLaunchStart.bind(this);
     this.onLaunchTimer    = this.onLaunchTimer.bind(this);
     this.onLaunchCancel   = this.onLaunchCancel.bind(this);
@@ -159,6 +160,7 @@ RoomController.prototype.attachEvents = function()
     this.repository.on('room:master', this.onRoomMaster);
     this.repository.on('room:game:start', this.start);
     this.repository.on('room:config:open', this.onConfigOpen);
+    this.repository.on('room:config:game-mode', this.onConfigGameMode);
     this.repository.on('room:launch:start', this.onLaunchStart);
     this.repository.on('room:launch:cancel', this.onLaunchCancel);
 
@@ -182,6 +184,7 @@ RoomController.prototype.detachEvents = function()
     this.repository.off('room:master', this.onRoomMaster);
     this.repository.off('room:game:start', this.start);
     this.repository.off('room:config:open', this.onConfigOpen);
+    this.repository.off('room:config:game-mode', this.onConfigGameMode);
     this.repository.off('room:launch:start', this.onLaunchStart);
     this.repository.off('room:launch:cancel', this.onLaunchCancel);
 
@@ -275,6 +278,14 @@ RoomController.prototype.kickPlayer = function(player)
 RoomController.prototype.onConfigOpen = function(e)
 {
     this.$location.search('password', this.room.config.password);
+    this.applyScope();
+};
+
+/**
+ * Go room config open
+ */
+RoomController.prototype.onConfigGameMode = function(e)
+{
     this.applyScope();
 };
 

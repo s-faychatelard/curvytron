@@ -31,6 +31,7 @@ Room.prototype.addPlayer = function(player)
     var result = BaseRoom.prototype.addPlayer.call(this, player);
 
     if (result) {
+        this.teams[Math.floor(Math.random()*2)].addPlayer(player);
         this.emit('player:join', {room: this, player: player});
     }
 

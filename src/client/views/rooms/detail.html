@@ -39,86 +39,173 @@
                     Activate the touch controls!
                 </button>
             </div>
-            <table class="room-players table v-align-middle">
-                <thead>
-                    <tr>
-                        <th class="col-remove"></th>
-                        <th class="col-icon"></th>
-                        <th class="col-player">Name</th>
-                        <th class="col-color">Color</th>
-                        <th class="col-keys">Controls</th>
-                        <th class="col-ready">Ready?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-if="room.players.isEmpty()">
-                        <td colspan="5" class="empty">
-                            Waiting for players...
-                        </td>
-                    </tr>
-                    <tr ng-repeat="player in room.players.items track by player.id | orderBy:'position'" ng-if="player.local" class="local">
-                        <td class="col-remove col-show-hover">
-                            <button type="button" class="btn btn-link btn-sm btn-remove pull-left" ng-click="removePlayer(player)">
-                                <span class="icon-close"></span>
-                            </button>
-                        </td>
-                        <td class="col-icon">
-                            <span ng-if="player.isMaster()" class="icon icon-crown pull-left"></span>
-                        </td>
-                        <td class="col-player">
-                            <input type="text" ng-model="player.name" ng-blur="setName(player)" class="form-control player-name" name="name" maxlength="{{ ::nameMaxLength }}" />
-                        </td>
-                        <td class="col-color">
-                            <input type="text" colorpicker="hex" colorpicker-position="right" ng-model="player.color" ng-blur="setColor(player)" class="form-control player-color" name="color" placeholder="#CCCCCC" style="border-color: {{ player.color }};" maxlength="{{ ::colorMaxLength }}" />
-                        </td>
-                        <td class="col-keys">
-                            <button class="btn btn-default control"
-                                ng-repeat="control in ::player.controls track by $index"
-                                ng-click="control.toggle()"
-                                ng-class="{ 'active': control.mapper.listening }"
-                            >
-                                {{ control.mapper.view }}
-                            </button>
-                        </td>
-                        <td class="col-ready">
-                            <div class="player-ready local" ng-click="setReady(player)" ng-class="{ ready: player.ready }">
-                                <span>
-                                    <span ng-if="!player.ready">Ready?</span>
-                                    <span ng-if="player.ready" class="icon-check success"></span>
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr ng-repeat="player in room.players.items track by player.id | orderBy:'position'" ng-if="!player.local">
-                        <td class="col-remove col-show-hover {{ player.vote ? 'active' : '' }}">
-                            <button type="button" class="btn btn-link btn-sm btn-remove pull-left" ng-click="kickPlayer(player)">
-                                <span class="icon-kick {{ player.kicked ? 'kicked' : '' }}"></span>
-                            </button>
-                        </td>
-                        <td class="col-icon">
-                            <span ng-if="!player.client.active" class="icon inactive icon-clock pull-left"></span>
-                            <span ng-if="player.isMaster()" class="icon icon-crown pull-left"></span>
-                        </td>
-                        <td class="col-player">
-                            <p class="player-name">{{ player.name }}</p>
-                        </td>
-                        <td class="col-color">
-                            <span class="line-color-preview" style="background-color: {{ player.color }};"></span>
-                            <p>{{ player.color }}</p>
-                        </td>
-                        <td class="col-keys"></td>
-                        <td class="col-ready">
-                            <div class="player-ready" ng-class="{ ready: player.ready }">
-                                <span>
-                                    <i ng-if="player.ready" class="icon-check success"></i>
-                                    <i ng-if="!player.ready" class="icon-close success"></i>
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
+            <div ng-if="room.config.gameMode == 'ffa'" class="room-players">
+                <table class="table v-align-middle">
+                    <thead>
+                        <tr>
+                            <th class="col-remove"></th>
+                            <th class="col-icon"></th>
+                            <th class="col-player">Name</th>
+                            <th class="col-color">Color</th>
+                            <th class="col-keys">Controls</th>
+                            <th class="col-ready">Ready?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-if="room.players.isEmpty()">
+                            <td colspan="5" class="empty">
+                                Waiting for players...
+                            </td>
+                        </tr>
+                        <tr ng-repeat="player in room.players.items track by player.id | orderBy:'position'" ng-if="player.local" class="local">
+                            <td class="col-remove col-show-hover">
+                                <button type="button" class="btn btn-link btn-sm btn-remove pull-left" ng-click="removePlayer(player)">
+                                    <span class="icon-close"></span>
+                                </button>
+                            </td>
+                            <td class="col-icon">
+                                <span ng-if="player.isMaster()" class="icon icon-crown pull-left"></span>
+                            </td>
+                            <td class="col-player">
+                                <input type="text" ng-model="player.name" ng-blur="setName(player)" class="form-control player-name" name="name" maxlength="{{ ::nameMaxLength }}" />
+                            </td>
+                            <td class="col-color">
+                                <input type="text" colorpicker="hex" colorpicker-position="right" ng-model="player.color" ng-blur="setColor(player)" class="form-control player-color" name="color" placeholder="#CCCCCC" style="border-color: {{ player.color }};" maxlength="{{ ::colorMaxLength }}" />
+                            </td>
+                            <td class="col-keys">
+                                <button class="btn btn-default control"
+                                    ng-repeat="control in ::player.controls track by $index"
+                                    ng-click="control.toggle()"
+                                    ng-class="{ 'active': control.mapper.listening }"
+                                >
+                                    {{ control.mapper.view }}
+                                </button>
+                            </td>
+                            <td class="col-ready">
+                                <div class="player-ready local" ng-click="setReady(player)" ng-class="{ ready: player.ready }">
+                                    <span>
+                                        <span ng-if="!player.ready">Ready?</span>
+                                        <span ng-if="player.ready" class="icon-check success"></span>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="player in room.players.items track by player.id | orderBy:'position'" ng-if="!player.local">
+                            <td class="col-remove col-show-hover {{ player.vote ? 'active' : '' }}">
+                                <button type="button" class="btn btn-link btn-sm btn-remove pull-left" ng-click="kickPlayer(player)">
+                                    <span class="icon-kick {{ player.kicked ? 'kicked' : '' }}"></span>
+                                </button>
+                            </td>
+                            <td class="col-icon">
+                                <span ng-if="!player.client.active" class="icon inactive icon-clock pull-left"></span>
+                                <span ng-if="player.isMaster()" class="icon icon-crown pull-left"></span>
+                            </td>
+                            <td class="col-player">
+                                <p class="player-name">{{ player.name }}</p>
+                            </td>
+                            <td class="col-color">
+                                <span class="line-color-preview" style="background-color: {{ player.color }};"></span>
+                                <p>{{ player.color }}</p>
+                            </td>
+                            <td class="col-keys"></td>
+                            <td class="col-ready">
+                                <div class="player-ready" ng-class="{ ready: player.ready }">
+                                    <span>
+                                        <i ng-if="player.ready" class="icon-check success"></i>
+                                        <i ng-if="!player.ready" class="icon-close success"></i>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3><p>Minimum players : {{ room.minPlayer() }}</p></h3>
+            </div>
+            <div ng-if="room.config.gameMode == 'team'" class="room-players">
+                <div ng-repeat="team in room.teams track by team.id">
+                    <h2>Team {{ team.id }}</h2>
+                    <table class="table v-align-middle">
+                        <thead>
+                            <tr>
+                                <th class="col-remove"></th>
+                                <th class="col-icon"></th>
+                                <th class="col-player">Name</th>
+                                <th class="col-color">Color</th>
+                                <th class="col-keys">Controls</th>
+                                <th class="col-ready">Ready?</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="room.players.isEmpty()">
+                                <td colspan="5" class="empty">
+                                    Waiting for players...
+                                </td>
+                            </tr>
+                            <tr ng-repeat="player in team.players.items track by player.id | orderBy:'position'" ng-if="player.local" class="local">
+                                <td class="col-remove col-show-hover">
+                                    <button type="button" class="btn btn-link btn-sm btn-remove pull-left" ng-click="removePlayer(player)">
+                                        <span class="icon-close"></span>
+                                    </button>
+                                </td>
+                                <td class="col-icon">
+                                    <span ng-if="player.isMaster()" class="icon icon-crown pull-left"></span>
+                                </td>
+                                <td class="col-player">
+                                    <input type="text" ng-model="player.name" ng-blur="setName(player)" class="form-control player-name" name="name" maxlength="{{ ::nameMaxLength }}" />
+                                </td>
+                                <td class="col-color">
+                                    <input type="text" colorpicker="hex" colorpicker-position="right" ng-model="player.color" ng-blur="setColor(player)" class="form-control player-color" name="color" placeholder="#CCCCCC" style="border-color: {{ player.color }};" maxlength="{{ ::colorMaxLength }}" />
+                                </td>
+                                <td class="col-keys">
+                                    <button class="btn btn-default control"
+                                        ng-repeat="control in ::player.controls track by $index"
+                                        ng-click="control.toggle()"
+                                        ng-class="{ 'active': control.mapper.listening }"
+                                    >
+                                        {{ control.mapper.view }}
+                                    </button>
+                                </td>
+                                <td class="col-ready">
+                                    <div class="player-ready local" ng-click="setReady(player)" ng-class="{ ready: player.ready }">
+                                        <span>
+                                            <span ng-if="!player.ready">Ready?</span>
+                                            <span ng-if="player.ready" class="icon-check success"></span>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr ng-repeat="player in team.players.items track by player.id | orderBy:'position'" ng-if="!player.local">
+                                <td class="col-remove col-show-hover {{ player.vote ? 'active' : '' }}">
+                                    <button type="button" class="btn btn-link btn-sm btn-remove pull-left" ng-click="kickPlayer(player)">
+                                        <span class="icon-kick {{ player.kicked ? 'kicked' : '' }}"></span>
+                                    </button>
+                                </td>
+                                <td class="col-icon">
+                                    <span ng-if="!player.client.active" class="icon inactive icon-clock pull-left"></span>
+                                    <span ng-if="player.isMaster()" class="icon icon-crown pull-left"></span>
+                                </td>
+                                <td class="col-player">
+                                    <p class="player-name">{{ player.name }}</p>
+                                </td>
+                                <td class="col-color">
+                                    <span class="line-color-preview" style="background-color: {{ player.color }};"></span>
+                                    <p>{{ player.color }}</p>
+                                </td>
+                                <td class="col-keys"></td>
+                                <td class="col-ready">
+                                    <div class="player-ready" ng-class="{ ready: player.ready }">
+                                        <span>
+                                            <i ng-if="player.ready" class="icon-check success"></i>
+                                            <i ng-if="!player.ready" class="icon-close success"></i>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <h3><p>Minimum players : {{ room.minPlayer() }}</p></h3>
+            </div>
             <div class="room-chat" ng-controller="ChatController">
                 <div class="chat-wrapper" ng-include="'js/views/chat/chat.html'" onload="chatLoaded()"></div>
             </div>

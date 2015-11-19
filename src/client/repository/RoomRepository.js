@@ -582,7 +582,7 @@ RoomRepository.prototype.onConfigGameMode = function(e)
     var data = e.detail;
 
     this.room.config.setGameMode(data.gameMode);
-    this.emit('config:game-mode', {gameMode: data.gameMode});
+    this.emit('room:config:game-mode', {gameMode: data.gameMode});
 };
 
 /**

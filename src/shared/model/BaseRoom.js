@@ -8,6 +8,7 @@ function BaseRoom(name)
     this.name    = name;
     this.players = new Collection([], 'id', true);
     this.config  = new RoomConfig(this);
+    this.teams   = [new Team(1), new Team(2)];
 
     this.closeGame = this.closeGame.bind(this);
 }
@@ -20,7 +21,9 @@ BaseRoom.prototype.constructor = BaseRoom;
  *
  * @type {Number}
  */
-BaseRoom.prototype.minPlayer = 1;
+BaseRoom.prototype.minPlayer = function() {
+    return this && this.config && this.config.gameMode == 'team' ? 2 : 1;
+};
 
 /**
  * Max length for name
@@ -85,7 +88,7 @@ BaseRoom.prototype.removePlayer = function(player)
  */
 BaseRoom.prototype.isReady = function()
 {
-    return !this.game && this.players.count() >= this.minPlayer  && this.players.filter(function () { return !this.ready; }).isEmpty();
+    return !this.game && this.players.count() >= this.minPlayer()  && this.players.filter(function () { return !this.ready; }).isEmpty();
 };
 
 /**

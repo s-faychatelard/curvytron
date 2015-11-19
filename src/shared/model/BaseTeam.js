@@ -9,7 +9,8 @@ function BaseTeam(id)
 {
     EventEmitter.call(this);
 
-    this.id     = id;
+    this.id         = id;
+    this.players    = new Collection([], 'id', true);
 }
 
 BaseTeam.prototype = Object.create(EventEmitter.prototype);
@@ -21,6 +22,14 @@ BaseTeam.prototype.constructor = BaseTeam;
  * @type {Number}
  */
 BaseTeam.prototype.maxPlayer = 5;
+
+BaseTeam.prototype.addPlayer = function(player) {
+    this.players.add(player);
+}
+
+BaseTeam.prototype.removePlayer = function(player) {
+    this.players.remove(player);
+}
 
 /**
  * Equal
@@ -42,6 +51,7 @@ BaseTeam.prototype.equal = function(team)
 BaseTeam.prototype.serialize = function()
 {
     return {
-        id: this.id
+        id: this.id,
+        players: this.players
     };
 };
