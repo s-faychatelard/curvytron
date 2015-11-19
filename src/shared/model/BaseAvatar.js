@@ -10,6 +10,7 @@ function BaseAvatar(player)
     this.id              = player.id;
     this.name            = player.name;
     this.color           = player.color;
+    this.team            = player.team;
     this.player          = player;
     this.x               = 0;
     this.y               = 0;

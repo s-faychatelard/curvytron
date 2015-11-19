@@ -33,6 +33,28 @@ BaseTeam.prototype.removePlayer = function(player) {
     this.emit('team:changed', {player: player});
 }
 
+BaseTeam.prototype.roundScore = function() {
+    var roundScore = 0;
+    for (var id in this.room.players.items) {
+        var player = this.room.players.getByIndex(id);
+        if (player.team == this.id) {
+            roundScore += player.getAvatar().roundScore;
+        }
+    }
+    return Math.floor(roundScore/this.room.players.items.length*10);
+}
+
+BaseTeam.prototype.score = function() {
+    var score = 0;
+    for (var id in this.room.players.items) {
+        var player = this.room.players.getByIndex(id);
+        if (player.team == this.id) {
+            score += player.getAvatar().score;
+        }
+    }
+    return Math.floor(score/this.room.players.items.length*10);
+}
+
 /**
  * Equal
  *

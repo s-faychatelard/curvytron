@@ -114,8 +114,6 @@ BaseSocketClient.prototype.addEvent = function (name, data, callback, force)
         event[2] = this.indexCallback(callback);
     }
 
-    console.log('Send', event);
-
     if (!this.interval || (typeof(force) !== 'undefined' && force)) {
         this.sendEvents([event]);
     } else {
@@ -212,8 +210,6 @@ BaseSocketClient.prototype.onMessage = function (e)
     var data = JSON.parse(e.data),
         length = data.length,
         name, source;
-
-    console.log('Receive', data);
 
     for (var i = 0; i < length; i++) {
         source = data[i];

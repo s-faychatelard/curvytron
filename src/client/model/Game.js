@@ -105,7 +105,9 @@ Game.prototype.onStart = function()
 Game.prototype.isTieBreak = function()
 {
     var maxScore = this.maxScore;
-    
+    if (this.room.config.gameMode == 'team') {
+        return this.room.teams.match(function () { return this.score() >= maxScore; }) !== null;
+    }
     return this.avatars.match(function () { return this.score >= maxScore; }) !== null;
 };
 

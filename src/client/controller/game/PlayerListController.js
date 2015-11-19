@@ -58,6 +58,21 @@ PlayerListController.prototype.detachEvents = function()
 };
 
 /**
+ * Get team related elements in DOM
+ *
+ * @param {Team} team
+ */
+PlayerListController.prototype.getTeamElements = function(team)
+{
+    if (!team.elements.score) {
+        team.elements.score      = document.getElementById('team-score-' + team.id);
+        team.elements.roundScore = document.getElementById('team-round-score-' + team.id);
+    }
+
+    return team.elements;
+};
+
+/**
  * Get avatar related elements in DOM
  *
  * @param {Avatar} avatar
@@ -85,10 +100,22 @@ PlayerListController.prototype.getElements = function(avatar)
 PlayerListController.prototype.onScore = function(e)
 {
     var avatar = this.game.avatars.getById(e.detail[0]);
+    var team = null;
+    for (var id in this.game.room.teams.items) {
+        var t = this.game.room.teams.getByIndex(id);
+        if (t.id == avatar.team) {
+            team = t;
+            break;
+        }
+    }
 
     if (avatar) {
         avatar.setScore(e.detail[1]);
         this.updateScore(avatar);
+    }
+
+    if (team) {
+        this.updateTeamScore(team);
     }
 };
 
@@ -100,10 +127,22 @@ PlayerListController.prototype.onScore = function(e)
 PlayerListController.prototype.onRoundScore = function(e)
 {
     var avatar = this.game.avatars.getById(e.detail[0]);
+    var team = null;
+    for (var id in this.game.room.teams.items) {
+        var t = this.game.room.teams.getByIndex(id);
+        if (t.id == avatar.team) {
+            team = t;
+            break;
+        }
+    }
 
     if (avatar) {
         avatar.setRoundScore(e.detail[1]);
         this.updateRoundScore(avatar);
+    }
+
+    if (team) {
+        this.updateTeamRoundScore(team);
     }
 };
 
@@ -156,7 +195,6 @@ PlayerListController.prototype.updateScore = function(avatar)
     this.getElements(avatar).score.innerHTML = avatar.score;
 };
 
-
 /**
  * Update round score
  *
@@ -165,6 +203,26 @@ PlayerListController.prototype.updateScore = function(avatar)
 PlayerListController.prototype.updateRoundScore = function(avatar)
 {
     this.getElements(avatar).roundScore.innerHTML = avatar.roundScore ? '+' + avatar.roundScore : '';
+};
+
+/**
+ * Update score
+ *
+ * @param {Avatar} avatar
+ */
+PlayerListController.prototype.updateTeamScore = function(team)
+{
+    this.getTeamElements(team).score.innerHTML = team.score();
+};
+
+/**
+ * Update round score
+ *
+ * @param {Avatar} avatar
+ */
+PlayerListController.prototype.updateTeamRoundScore = function(team)
+{
+    this.getTeamElements(team).roundScore.innerHTML = team.roundScore() ? '+' + team.roundScore() : '';
 };
 
 /**

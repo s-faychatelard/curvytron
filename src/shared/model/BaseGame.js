@@ -292,6 +292,22 @@ BaseGame.prototype.sortAvatars = function(avatars)
 };
 
 /**
+ * Sort teams
+ *
+ * @param {Object} teams
+ *
+ * @return {Object}
+ */
+BaseGame.prototype.sortTeams = function(teams)
+{
+    teams = typeof(teams) !== 'undefined' ? teams : this.teams;
+
+    teams.sort(function (a, b) { return a.score() > b.score() ? -1 : (a.score() < b.score() ? 1 : 0); });
+
+    return teams;
+};
+
+/**
  * Set borderless
  *
  * @param {Boolean} borderless

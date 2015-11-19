@@ -198,7 +198,11 @@ BaseRoomConfig.prototype.getMaxScore = function()
  */
 BaseRoomConfig.prototype.getDefaultMaxScore = function()
 {
-    return Math.max(1, (this.room.players.count() - 1) * 10);
+    var defaultScore = Math.max(1, (this.room.players.count() - 1) * 10);
+    if (this.gameMode == 'team') {
+        return Math.floor(defaultScore/this.room.players.count()*10);
+    }
+    return defaultScore;
 };
 
 /**

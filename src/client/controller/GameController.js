@@ -131,7 +131,7 @@ GameController.prototype.checkReady = function()
 {
     if (this.game.bonusManager.loaded && this.setup) {
         this.game.bonusManager.off('load', this.checkReady);
-        //this.client.addEvent('ready');
+        this.client.addEvent('ready');
     }
 };
 

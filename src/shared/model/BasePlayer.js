@@ -15,6 +15,7 @@ function BasePlayer(client, name, color, ready)
     this.ready  = typeof(ready) !== 'undefined' && ready;
     this.id     = null;
     this.avatar = null;
+    this.team   = null;
 }
 
 BasePlayer.prototype = Object.create(EventEmitter.prototype);
@@ -116,7 +117,8 @@ BasePlayer.prototype.serialize = function()
         id: this.id,
         name: this.name,
         color: this.color,
-        ready: this.ready
+        ready: this.ready,
+        team: this.team
     };
 };
 

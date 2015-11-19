@@ -129,20 +129,38 @@ Game.prototype.isWon = function()
     if (present <= 0) { return true; }
     if (this.avatars.count() > 1 && present <= 1) { return true; }
 
-    var maxScore = this.maxScore,
-        players = this.avatars.filter(function () { return this.present && this.score >= maxScore; });
+    var maxScore = this.maxScore;
 
-    if (players.count() === 0) {
-        return null;
+    if (this.room.config.gameMode == 'team') {
+        var teams = this.room.teams.filter(function () { return this.score() >= maxScore; });
+
+        if (teams.count() === 0) {
+            return null;
+        }
+
+        if (teams.count() === 1) {
+            return teams.getFirst();
+        }
+
+        this.sortTeams(teams);
+
+        return teams.items[0].score === teams.items[1].score ? null : teams.getFirst();
     }
+    else {
+        var players = this.avatars.filter(function () { return this.present && this.score >= maxScore; });
 
-    if (players.count() === 1) {
-        return players.getFirst();
+        if (players.count() === 0) {
+            return null;
+        }
+
+        if (players.count() === 1) {
+            return players.getFirst();
+        }
+
+        this.sortAvatars(players);
+
+        return players.items[0].score === players.items[1].score ? null : players.getFirst();
     }
-
-    this.sortAvatars(players);
-
-    return players.items[0].score === players.items[1].score ? null : players.getFirst();
 };
 
 /**
