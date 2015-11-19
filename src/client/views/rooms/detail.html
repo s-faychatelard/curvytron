@@ -122,8 +122,8 @@
                 <h3><p>Minimum players : {{ room.minPlayer() }}</p></h3>
             </div>
             <div ng-if="room.config.gameMode == 'team'" class="room-players">
-                <div ng-repeat="team in room.teams track by team.id">
-                    <h2>Team {{ team.id }}</h2>
+                <div ng-repeat="team in room.teams.items | orderBy:'id'">
+                    <h2 ng-click="team.addPlayer(room.me())">Team {{ team.id }}</h2>
                     <table class="table v-align-middle">
                         <thead>
                             <tr>
@@ -141,7 +141,7 @@
                                     Waiting for players...
                                 </td>
                             </tr>
-                            <tr ng-repeat="player in team.players.items track by player.id | orderBy:'position'" ng-if="player.local" class="local">
+                            <tr ng-repeat="player in room.players.items | filter:{team:team.id} | orderBy:'position'" ng-if="player.local" class="local">
                                 <td class="col-remove col-show-hover">
                                     <button type="button" class="btn btn-link btn-sm btn-remove pull-left" ng-click="removePlayer(player)">
                                         <span class="icon-close"></span>
@@ -174,7 +174,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr ng-repeat="player in team.players.items track by player.id | orderBy:'position'" ng-if="!player.local">
+                            <tr ng-repeat="player in room.players.items | filter:{team:team.id} | orderBy:'position'" ng-if="!player.local">
                                 <td class="col-remove col-show-hover {{ player.vote ? 'active' : '' }}">
                                     <button type="button" class="btn btn-link btn-sm btn-remove pull-left" ng-click="kickPlayer(player)">
                                         <span class="icon-kick {{ player.kicked ? 'kicked' : '' }}"></span>

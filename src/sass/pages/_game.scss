@@ -133,11 +133,14 @@
         }
 
         .game-players {
+            bottom: 298px;
+        }
+
+        .game-players, .game-players {
             margin-bottom: 0;
             position: fixed;
             overflow: auto;
             top: $game-header-height + 160px;
-            bottom: 298px;
             left: 0;
             width: $aside-width;
 
@@ -750,4 +753,3 @@
     z-index: 1;
     @include transition(all 0.25s cubic-bezier(0.785, 0.135, 0.15, 0.86));
 }
-

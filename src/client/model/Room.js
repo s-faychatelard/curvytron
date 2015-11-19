@@ -22,6 +22,16 @@ Room.prototype.getLocalPlayers = function()
 };
 
 /**
+ * Me
+ *
+ * @return {Player}
+ */
+Room.prototype.me = function()
+{
+    return this.players.filter(function () { return this.local; }).getByIndex(0);
+};
+
+/**
  * Get player by client Id
  *
  * @param {Number} client

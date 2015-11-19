@@ -12,12 +12,13 @@ function RoomsController(repository)
     this.socketGroup = new SocketGroup();
     this.repository  = repository;
 
-    this.onRoomOpen       = this.onRoomOpen.bind(this);
-    this.onRoomClose      = this.onRoomClose.bind(this);
-    this.onRoomPlayer     = this.onRoomPlayer.bind(this);
-    this.onRoomGame       = this.onRoomGame.bind(this);
-    this.onRoomConfigOpen = this.onRoomConfigOpen.bind(this);
-    this.detach           = this.detach.bind(this);
+    this.onRoomOpen                 = this.onRoomOpen.bind(this);
+    this.onRoomClose                = this.onRoomClose.bind(this);
+    this.onRoomPlayer               = this.onRoomPlayer.bind(this);
+    this.onRoomGame                 = this.onRoomGame.bind(this);
+    this.onRoomConfigOpen           = this.onRoomConfigOpen.bind(this);
+    this.onRoomPlayerTeamChanged    = this.onRoomPlayerTeamChanged.bind(this);
+    this.detach                     = this.detach.bind(this);
 
     this.callbacks = {
         emitAllRooms: function () { controller.emitAllRooms(this); },
@@ -67,6 +68,7 @@ RoomsController.prototype.attachEvents = function(client)
     client.on('room:fetch', this.callbacks.emitAllRooms);
     client.on('room:create', this.callbacks.onCreateRoom);
     client.on('room:join', this.callbacks.onJoinRoom);
+    client.on('team:changed', this.onRoomPlayerTeamChanged);
 };
 
 /**
@@ -80,6 +82,7 @@ RoomsController.prototype.detachEvents = function(client)
     client.removeListener('room:fetch', this.callbacks.emitAllRooms);
     client.removeListener('room:create', this.callbacks.onCreateRoom);
     client.removeListener('room:join', this.callbacks.onJoinRoom);
+    client.removeListener('team:changed', this.onRoomPlayerTeamChanged);
 };
 
 /**
@@ -177,6 +180,11 @@ RoomsController.prototype.onRoomClose = function(data)
     room.config.on('room:config:open', this.onRoomConfigOpen);
 
     this.socketGroup.addEvent('room:close', {name: room.name});
+};
+
+RoomsController.prototype.onRoomPlayerTeamChanged = function(data)
+{
+    this.socketGroup.addEvent('room:team:changed', {playerId: data.playerId, team: data.team});
 };
 
 /**

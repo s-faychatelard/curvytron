@@ -90,6 +90,7 @@ SocketClient.prototype.onActivity = function(active)
  */
 SocketClient.prototype.sendEvents = function (events)
 {
+    console.info(events);
     this.tickrate.tick(events);
     BaseSocketClient.prototype.sendEvents.call(this, events);
 };

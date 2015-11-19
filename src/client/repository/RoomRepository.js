@@ -58,6 +58,7 @@ RoomRepository.prototype.attachEvents = function()
     this.client.on('room:config:bonus', this.onConfigBonus);
     this.client.on('room:launch:start', this.forwardEvent);
     this.client.on('room:launch:cancel', this.forwardEvent);
+    this.client.on('room:team:changed', this.forwardEvent);
     this.client.on('room:kick', this.onKick);
     this.client.on('vote:new', this.onVote);
     this.client.on('vote:close', this.onVote);
@@ -85,6 +86,7 @@ RoomRepository.prototype.detachEvents = function()
     this.client.off('room:config:bonus', this.onConfigBonus);
     this.client.off('room:launch:start', this.forwardEvent);
     this.client.off('room:launch:cancel', this.forwardEvent);
+    this.client.off('room:team:changed', this.forwardEvent);
     this.client.off('room:kick', this.onKick);
     this.client.off('vote:new', this.onVote);
     this.client.off('vote:close', this.onVote);

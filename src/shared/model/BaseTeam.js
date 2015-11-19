@@ -5,12 +5,12 @@
  * @param {String} name
  * @param {String} color
  */
-function BaseTeam(id)
+function BaseTeam(id, room)
 {
     EventEmitter.call(this);
 
     this.id         = id;
-    this.players    = new Collection([], 'id', true);
+    this.room       = room;
 }
 
 BaseTeam.prototype = Object.create(EventEmitter.prototype);
@@ -24,11 +24,13 @@ BaseTeam.prototype.constructor = BaseTeam;
 BaseTeam.prototype.maxPlayer = 5;
 
 BaseTeam.prototype.addPlayer = function(player) {
-    this.players.add(player);
+    player.team = this.id;
+    this.emit('team:changed', {player: player});
 }
 
 BaseTeam.prototype.removePlayer = function(player) {
-    this.players.remove(player);
+    player.team = null;
+    this.emit('team:changed', {player: player});
 }
 
 /**
@@ -51,7 +53,6 @@ BaseTeam.prototype.equal = function(team)
 BaseTeam.prototype.serialize = function()
 {
     return {
-        id: this.id,
-        players: this.players
+        id: this.id
     };
 };

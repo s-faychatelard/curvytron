@@ -40,6 +40,7 @@ function RoomController($scope, $routeParams, $location, client, repository, pro
     this.onJoin           = this.onJoin.bind(this);
     this.onJoined         = this.onJoined.bind(this);
     this.onControlChange  = this.onControlChange.bind(this);
+    this.onTeamChanged    = this.onTeamChanged.bind(this);
     this.joinRoom         = this.joinRoom.bind(this);
     this.leaveRoom        = this.leaveRoom.bind(this);
     this.setColor         = this.setColor.bind(this);
@@ -54,6 +55,7 @@ function RoomController($scope, $routeParams, $location, client, repository, pro
     this.onLaunchStart    = this.onLaunchStart.bind(this);
     this.onLaunchTimer    = this.onLaunchTimer.bind(this);
     this.onLaunchCancel   = this.onLaunchCancel.bind(this);
+    this.onRoomPlayerTeamChanged = this.onRoomPlayerTeamChanged.bind(this);
     this.launch           = this.launch.bind(this);
     this.start            = this.start.bind(this);
 
@@ -163,9 +165,14 @@ RoomController.prototype.attachEvents = function()
     this.repository.on('room:config:game-mode', this.onConfigGameMode);
     this.repository.on('room:launch:start', this.onLaunchStart);
     this.repository.on('room:launch:cancel', this.onLaunchCancel);
+    this.repository.on('room:team:changed', this.onRoomPlayerTeamChanged);
 
     for (var i = this.room.players.items.length - 1; i >= 0; i--) {
         this.room.players.items[i].on('control:change', this.onControlChange);
+    }
+
+    for (var i = this.room.teams.items.length - 1; i >= 0; i--) {
+        this.room.teams.items[i].on('team:changed', this.onTeamChanged);
     }
 };
 
@@ -187,10 +194,15 @@ RoomController.prototype.detachEvents = function()
     this.repository.off('room:config:game-mode', this.onConfigGameMode);
     this.repository.off('room:launch:start', this.onLaunchStart);
     this.repository.off('room:launch:cancel', this.onLaunchCancel);
+    this.repository.off('room:team:changed', this.onRoomPlayerTeamChanged);
 
     if (this.room) {
         for (var i = this.room.players.items.length - 1; i >= 0; i--) {
             this.room.players.items[i].off('control:change', this.onControlChange);
+        }
+
+        for (var i = this.room.teams.items.length - 1; i >= 0; i--) {
+            this.room.teams.items[i].off('team:changed', this.onTeamChanged);
         }
     }
 };
@@ -287,6 +299,16 @@ RoomController.prototype.onConfigOpen = function(e)
 RoomController.prototype.onConfigGameMode = function(e)
 {
     this.applyScope();
+};
+
+/**
+ * Update player team
+ */
+RoomController.prototype.onRoomPlayerTeamChanged = function(e)
+{
+    var player = this.room.players.match(function () { return this.id == e.detail.playerId; });
+    player.team = e.detail.team;
+    this.requestDigestScope();
 };
 
 /**
@@ -473,6 +495,18 @@ RoomController.prototype.updateCurrentMessage = function()
 RoomController.prototype.onControlChange = function(e)
 {
     this.saveProfileControls();
+    this.digestScope();
+};
+
+/**
+ * Triggered when a player changes team
+ *
+ * @param {Event} e
+ */
+RoomController.prototype.onTeamChanged = function(e)
+{
+    var player = e.detail.player;
+    this.client.addEvent('team:changed', {playerId: player.id, team: player.team});
     this.digestScope();
 };
 

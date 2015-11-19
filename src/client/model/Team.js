@@ -1,9 +1,9 @@
 /**
  * Team
  */
-function Team(id)
+function Team(id, room)
 {
-    BaseTeam.call(this, id);
+    BaseTeam.call(this, id, room);
 }
 
 Team.prototype = Object.create(BaseTeam.prototype);

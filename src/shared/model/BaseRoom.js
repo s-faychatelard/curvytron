@@ -8,7 +8,7 @@ function BaseRoom(name)
     this.name    = name;
     this.players = new Collection([], 'id', true);
     this.config  = new RoomConfig(this);
-    this.teams   = [new Team(1), new Team(2)];
+    this.teams   = new Collection([new Team(1, this), new Team(2, this)], 'id', true);
 
     this.closeGame = this.closeGame.bind(this);
 }
